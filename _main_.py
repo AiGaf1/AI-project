@@ -10,17 +10,19 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from os import listdir
+
+from networkx.algorithms.tree.mst import minimum_spanning_tree
 from matrix_functions import *
 from Algorithms.new_ACO import AntColony
 from Algorithms.greedy_algo import greedy_algo
 from Algorithms.dynamic import dynamProg
 from Algorithms.bruteForce import brute_force
+from Algorithms.minSpannigTree import run_MNS
+from Algorithms.branchAndBound import branchAndBound
 
 
 import sip
 import time
-
-import networkx as nx
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as Navi
 
@@ -36,7 +38,7 @@ class MatplotlibCanvas(FigureCanvasQTAgg):
 class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Symmetric TSP"))
         self.label.setText(_translate("MainWindow", "Algorithms"))
         self.label_2.setText(_translate("MainWindow", "TSP"))
         self.pushButton.setText(_translate("MainWindow", "Run"))
@@ -104,8 +106,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.toolbar)
 
         self.filenames = sorted(listdir('TSP'))
-        self.algos = sorted(['Greedy', 'ACO', 'Dynamic', 'Brute Force'])
-        self.algo_func = {'Greedy': greedy_algo, 'Dynamic' : dynamProg, 'Brute Force' : brute_force}
+        self.algos = sorted(['Greedy', 'ACO', 'Dynamic', 'Brute Force', 'Min Spanning Tree', 'Branch and Bound' ])
+
+
+        
+        self.algo_func = {'Greedy': greedy_algo, 'Dynamic' : dynamProg, 'Brute Force' : brute_force, 
+                        'Min Spanning Tree' : run_MNS, 'Branch and Bound' : run_MNS}
 
         self.comboBox_1.addItems(self.algos)
         self.comboBox.addItems(self.filenames)
@@ -134,7 +140,7 @@ class Ui_MainWindow(object):
         start = time.process_time()
         
         if algoName == "ACO":
-            ACO = AntColony(self.adj_matrix, 20, 0.95, alpha=1, beta=2)
+            ACO = AntColony(self.adj_matrix, 20)
             self.path, self.distance = ACO.run()     
         else:
             self.path, self.distance = self.algo_func[algoName](self.adj_matrix)

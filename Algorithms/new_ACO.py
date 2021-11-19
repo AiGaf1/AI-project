@@ -1,10 +1,10 @@
-import random as rn
 import numpy as np
 from numpy.random import choice as np_choice
 import math
+
 class AntColony(object):
 
-    def __init__(self, distances, n_iterations, decay, alpha=1, beta=2):
+    def __init__(self, distances, n_iterations, decay = 0.8, alpha=1, beta=2):
         """
         Args:
             distances (2D numpy.array): Square matrix of distances. Diagonal is assumed to be np.inf.
@@ -63,6 +63,7 @@ class AntColony(object):
         for i in range(self.n_ants):
             path = self.gen_path(0)
             all_paths.append((path, self.gen_path_dist(path)))
+    
         return all_paths
 
     def gen_path(self, start):
@@ -75,6 +76,8 @@ class AntColony(object):
             path.append((prev, move))
             prev = move
             visited.add(move)
+        
+            
         path.append((prev, start)) # going back to where we started    
         return path
 
@@ -84,7 +87,8 @@ class AntColony(object):
 
     
         prob = pheromone ** self.alpha * (( 1.0 / dist) ** self.beta)
-       
-        norm_prob = prob / sum(prob)
+        norm_prob = prob/sum(prob)
+        
         move = np_choice(self.all_inds, 1, p=norm_prob)[0]
+        
         return move
