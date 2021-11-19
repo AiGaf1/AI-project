@@ -4,7 +4,7 @@ import math
 
 class AntColony(object):
 
-    def __init__(self, distances, n_iterations, decay = 0.8, alpha=1, beta=2):
+    def __init__(self, distances, n_iterations, decay = 0.8, alpha=1, beta=6):
         """
         Args:
             distances (2D numpy.array): Square matrix of distances. Diagonal is assumed to be np.inf.
@@ -22,17 +22,19 @@ class AntColony(object):
         self.distances = np.array([[np.inf if i == 0 else i for i in dist] for dist in distances])
         self.pheromone = np.ones(self.distances.shape) / len(distances)
         self.all_inds = range(len(distances))
-        self.n_ants = math.ceil(self.distances.shape[0] / 100 * 10)
+
+        self.n_ants =  math.ceil(self.distances.shape[0] / 100 * 10)
         self.n_best = self.n_ants
         self.n_iterations = n_iterations
         self.decay = decay
         self.alpha = alpha
         self.beta = beta
 
+
     def run(self):
         shortest_path = None
         all_time_shortest_path = ("placeholder", np.inf)
-        for i in range(self.n_iterations):
+        for _ in range(self.n_iterations):
             all_paths = self.gen_all_paths()
             self.spread_pheronome(all_paths, self.n_best, shortest_path=shortest_path)
             shortest_path = min(all_paths, key=lambda x: x[1])
@@ -71,24 +73,28 @@ class AntColony(object):
         visited = set()
         visited.add(start)
         prev = start
-        for i in range(self.distances.shape[0] - 1):
+        for _ in range(self.distances.shape[0] - 1):
             move = self.pick_move(self.pheromone[prev], self.distances[prev], visited)
             path.append((prev, move))
             prev = move
             visited.add(move)
         
-            
         path.append((prev, start)) # going back to where we started    
         return path
-
+     
+    
     def pick_move(self, pheromone, dist, visited):
         pheromone = np.copy(pheromone)
         pheromone[list(visited)] = 0
 
-    
         prob = pheromone ** self.alpha * (( 1.0 / dist) ** self.beta)
-        norm_prob = prob/sum(prob)
         
+        norm_prob = prob
+        
+        if sum(prob) != 0:
+            norm_prob = prob/sum(prob)
+            
+
         move = np_choice(self.all_inds, 1, p=norm_prob)[0]
         
         return move
