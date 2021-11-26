@@ -112,7 +112,7 @@ class Ui_MainWindow(object):
 
         
         self.algo_func = {'Greedy': greedyAlgoVersion1, 'Greedy++' : greedyAlgoVersion2, 'Dynamic' : dynamProg, 'Brute Force' : brute_force, 
-                        'Min Spanning Tree' : run_MNS, 'Branch and Bound' : run_MNS}
+                        'Min Spanning Tree' : run_MNS, 'Branch and Bound' : branchAndBound}
 
         self.comboBox_1.addItems(self.algos)
         self.comboBox.addItems(self.filenames)
