@@ -14,7 +14,8 @@ from os import listdir
 from networkx.algorithms.tree.mst import minimum_spanning_tree
 from matrix_functions import *
 from Algorithms.new_ACO import AntColony
-from Algorithms.greedy_algo import greedy_algo
+from Algorithms.greedyAlgoVersion1 import greedyAlgoVersion1
+from Algorithms.greedyAlgoVersion2 import greedyAlgoVersion2
 from Algorithms.dynamic import dynamProg
 from Algorithms.bruteForce import brute_force
 from Algorithms.minSpannigTree import run_MNS
@@ -106,11 +107,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.toolbar)
 
         self.filenames = sorted(listdir('TSP'))
-        self.algos = sorted(['Greedy', 'ACO', 'Dynamic', 'Brute Force', 'Min Spanning Tree', 'Branch and Bound' ])
+        self.algos = sorted(['Greedy', 'Greedy++', 'ACO', 'Dynamic', 'Brute Force', 'Min Spanning Tree', 'Branch and Bound' ])
 
 
         
-        self.algo_func = {'Greedy': greedy_algo, 'Dynamic' : dynamProg, 'Brute Force' : brute_force, 
+        self.algo_func = {'Greedy': greedyAlgoVersion1, 'Greedy++' : greedyAlgoVersion2, 'Dynamic' : dynamProg, 'Brute Force' : brute_force, 
                         'Min Spanning Tree' : run_MNS, 'Branch and Bound' : run_MNS}
 
         self.comboBox_1.addItems(self.algos)

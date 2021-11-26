@@ -1,11 +1,10 @@
 import numpy as np
 
-def greedy_algo(adj_matrix):
+def greedyAlgoVersion1(adj_matrix):
 
     cur_city = 0 # current city
     route = [0] 
     length = 0
-    #city_lst = [i for i in range(len(adj_matrix))]
    
     while len(route) != len(adj_matrix):
         sorted_ind_cities = np.argsort(adj_matrix[cur_city])
