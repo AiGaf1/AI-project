@@ -1,7 +1,6 @@
 import numpy as np
 from numpy.random import choice as np_choice
 import math
-import random
 
 class AntColony(object):
 
@@ -64,9 +63,7 @@ class AntColony(object):
     def gen_all_paths(self):
         all_paths = []
         for i in range(self.n_ants):
-            start_city = random.randint(0, self.distances.shape[0] - 1)
-            #start_city = 0
-            path = self.gen_path(start_city)
+            path = self.gen_path(0)
             all_paths.append((path, self.gen_path_dist(path)))
     
         return all_paths
@@ -92,11 +89,11 @@ class AntColony(object):
 
         prob = pheromone ** self.alpha * (( 1.0 / dist) ** self.beta)
         
+        norm_prob = prob
         
         if sum(prob) != 0:
             norm_prob = prob/sum(prob)
-        else:
-            return 0
+            
 
         move = np_choice(self.all_inds, 1, p=norm_prob)[0]
         
