@@ -45,7 +45,6 @@ class AntColony(object):
             self.pheromone = self.pheromone * self.decay 
             
             route = [i[0] for i in all_time_shortest_path[0]]
-            route.append(0)
 
         return route, all_time_shortest_path[1]
 
@@ -64,25 +63,25 @@ class AntColony(object):
     def gen_all_paths(self):
         all_paths = []
         for i in range(self.n_ants):
-            start_city = random.randint(0, self.distances.shape[0] - 1)
-            #start_city = 0
-            path = self.gen_path(start_city)
+
+            path = self.gen_path()
             all_paths.append((path, self.gen_path_dist(path)))
     
         return all_paths
 
-    def gen_path(self, start):
+    def gen_path(self):
         path = []
+        start_city = random.randint(1, self.distances.shape[0] - 1)
         visited = set()
-        visited.add(start)
-        prev = start
+        visited.add(start_city)
+        prev = start_city
         for _ in range(self.distances.shape[0] - 1):
             move = self.pick_move(self.pheromone[prev], self.distances[prev], visited)
             path.append((prev, move))
             prev = move
             visited.add(move)
         
-        path.append((prev, start)) # going back to where we started    
+        path.append((prev, start_city)) # going back to where we started    
         return path
      
     
@@ -96,7 +95,7 @@ class AntColony(object):
         if sum(prob) != 0:
             norm_prob = prob/sum(prob)
         else:
-            return 0
+            return visited[0]
 
         move = np_choice(self.all_inds, 1, p=norm_prob)[0]
         

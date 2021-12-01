@@ -107,7 +107,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.toolbar)
 
         self.filenames = sorted(listdir('TSP'))
-        self.algos = sorted(['Greedy', 'Greedy++', 'ACO', 'Dynamic', 'Brute Force', 'Min Spanning Tree', 'Branch and Bound' ])
+        self.algos = sorted(['Greedy', 'Greedy++', 'ACO', 'Dynamic', 'Brute Force', 'Min Spanning Tree', 'Branch and Bound', 'Solution' ])
 
 
         
@@ -157,8 +157,8 @@ class Ui_MainWindow(object):
 
         # get current filname of combobox
         filename = str(self.comboBox.currentText())
-        self.df = file_to_df(filename)
-        self.adj_matrix = get_matrix(self.df)
+        self.df = get_coord('TSP/' + filename)
+        self.adj_matrix = get_adj_matrix('TSP/' + filename)
 
     def makePlot(self):
 
@@ -188,10 +188,11 @@ class Ui_MainWindow(object):
 
 def classicPlot(self):
     ax = self.canv.axes
-    self.points = self.df.values
-    x = [self.points[i][1] for i in self.path]
-    y = [self.points[i][2] for i in self.path]
-   
+    self.points = self.df
+  
+    #self.path = [1, 8, 38,31, 44, 18,7, 28,6,37,19,27,17,43,30,36,46,33,20,47,21,32,39,48,5,42,24,10,45,35,4,26,2,29,34,41,16,22,3,23,14,25,13,11,12,15,40,9,1]
+    x = [self.points[i][0] for i in self.path]
+    y = [self.points[i][1] for i in self.path]
     a_scale = float(max(x) + min(x))/float(130)
     ax.scatter(x,y)
 

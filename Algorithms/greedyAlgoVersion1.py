@@ -5,12 +5,14 @@ def greedyAlgoVersion1(adj_matrix):
     cur_city = 0 # current city
     route = [0] 
     length = 0
+    
    
-    while len(route) != len(adj_matrix):
-        sorted_ind_cities = np.argsort(adj_matrix[cur_city])
+    for i in range(len(adj_matrix)): #O(n)
 
-        for next_city in sorted_ind_cities:   # searching for the smallest distance 
-            if next_city not in route:
+        sorted_ind_cities = np.argsort(adj_matrix[cur_city]) #O(nlogn)  
+
+        for next_city in sorted_ind_cities: #O(n)  # searching for the smallest distance 
+            if next_city not in route: #O(n)
                 route.append(next_city)
                 length += adj_matrix[cur_city][next_city]
                 cur_city = next_city
@@ -22,6 +24,8 @@ def greedyAlgoVersion1(adj_matrix):
     return route, length
 
 
+# n * (n + nlogn) * n 
+#n^3 + n^2logn
 
 
 
