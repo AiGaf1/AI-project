@@ -95,7 +95,9 @@ class AntColony(object):
         if sum(prob) != 0:
             norm_prob = prob/sum(prob)
         else:
+
             return visited[0]
+
 
         move = np_choice(self.all_inds, 1, p=norm_prob)[0]
         
