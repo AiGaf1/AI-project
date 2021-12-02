@@ -22,8 +22,8 @@ def greedyAlgoVersion2(adj_matrix):
                     cur_city = next_city
                     break
         
-       # length += adj_matrix[route[-1]][cur_city]
-       # route.append(cur_city)
+        length += adj_matrix[route[0]][cur_city]
+        route.append(route[0])
 
         if best_length > length:
             best_length = length

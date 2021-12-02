@@ -149,7 +149,6 @@ class Ui_MainWindow(object):
         self.time = time.process_time() - start
 
         
-
     def readData(self):
         """ This function will read the data using pandas and call the update
                 function to plot
@@ -159,6 +158,7 @@ class Ui_MainWindow(object):
         filename = str(self.comboBox.currentText())
         self.df = get_coord('TSP/' + filename)
         self.adj_matrix = get_adj_matrix('TSP/' + filename)
+        
 
     def makePlot(self):
 
@@ -196,8 +196,8 @@ def classicPlot(self):
     a_scale = float(max(x) + min(x))/float(130)
     ax.scatter(x,y)
 
-    ax.arrow(x[-1], y[-1], (x[0] - x[-1]), (y[0] - y[-1]), head_width=a_scale,
-        color='g', length_includes_head=True)
+    # ax.arrow(x[-1], y[-1], (x[0] - x[-1]), (y[0] - y[-1]), head_width=a_scale,
+    #     color='g', length_includes_head=True)
     for i in range(0, len(x)-1):
         ax.arrow(x[i], y[i], (x[i+1] - x[i]), (y[i+1] - y[i]), head_width=a_scale,
             color='g', length_includes_head=True)

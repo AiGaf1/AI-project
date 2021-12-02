@@ -45,6 +45,7 @@ class AntColony(object):
             self.pheromone = self.pheromone * self.decay 
             
             route = [i[0] for i in all_time_shortest_path[0]]
+            route.append(route[0])
 
         return route, all_time_shortest_path[1]
 
@@ -94,11 +95,12 @@ class AntColony(object):
         
         if sum(prob) != 0:
             norm_prob = prob/sum(prob)
-        else:
+        else: 
+            return      
+            for move in range(len(self.distances[0])): #n  # searching for the smallest distance  
+                if move not in visited: # 1 * n
+                    return move
 
-            return visited[0]
-
-
-        move = np_choice(self.all_inds, 1, p=norm_prob)[0]
+        move = np_choice(self.all_inds, 1, p=norm_prob)[0]    
         
         return move
