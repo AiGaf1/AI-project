@@ -95,8 +95,7 @@ class AntColony(object):
         
         if sum(prob) != 0:
             norm_prob = prob/sum(prob)
-        else: 
-            return      
+        else:   
             for move in range(len(self.distances[0])): #n  # searching for the smallest distance  
                 if move not in visited: # 1 * n
                     return move

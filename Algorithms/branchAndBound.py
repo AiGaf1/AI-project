@@ -1,5 +1,6 @@
 import numpy as np
 
+best_cost = np.inf
 
 def initial_bound(A):
     sum = 0

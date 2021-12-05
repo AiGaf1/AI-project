@@ -27,6 +27,18 @@ import time
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as Navi
 
+def get_opt(self):
+    filename = 'TSP_OPT/' + self.filename.replace("tsp", "opt.tour")
+    path = tsp.loaders.load(filename).tours[0]
+    path.append(path[0])
+    path = [i-1 for i in path]
+    opt_cost = 0
+    for n in range(len(path)-1):    
+        i = path[n]
+        j = path[n+1]
+        opt_cost += self.adj_matrix[i][j]
+
+    return path, opt_cost
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
     def __init__(self, parent=None, dpi=120):
@@ -108,28 +120,20 @@ class Ui_MainWindow(object):
 
         self.filenames = sorted(listdir('TSP'))
         self.algos = sorted(['Greedy', 'Greedy++', 'ACO', 'Dynamic', 'Brute Force', 'Min Spanning Tree', 'Branch and Bound', 'Solution' ])
-
-
-        
         self.algo_func = {'Greedy': greedyAlgoVersion1, 'Greedy++' : greedyAlgoVersion2, 'Dynamic' : dynamProg, 'Brute Force' : brute_force, 
-                        'Min Spanning Tree' : run_MNS, 'Branch and Bound' : branchAndBound}
+                        'Min Spanning Tree' : run_MNS, 'Branch and Bound' : branchAndBound, "Solution" : get_opt}
 
         self.comboBox_1.addItems(self.algos)
         self.comboBox.addItems(self.filenames)
+        self.pushButton.clicked.connect(self.run)
 
-        self.pushButton.clicked.connect(self.Update)
-
-    # def makePlot(self):
-
-    def Update(self):
+    def run(self):
 
         self.readData()
         self.useAlgo()
         
-        #self.points = calculate_positions(self.adj_matrix)
         str_distance = str(round((self.distance),2))
         self.time = str(round((self.time),5))
-
         
         self.textEdit.setText("Route length: " + str_distance + "  Time: " + self.time + ' sec')
         self.makePlot()
@@ -142,7 +146,9 @@ class Ui_MainWindow(object):
         
         if algoName == "ACO":
             ACO = AntColony(self.adj_matrix, 20)
-            self.path, self.distance = ACO.run()     
+            self.path, self.distance = ACO.run()  
+        elif algoName == 'Solution':
+            self.path, self.distance = self.algo_func[algoName](self)
         else:
             self.path, self.distance = self.algo_func[algoName](self.adj_matrix)
             
@@ -150,14 +156,10 @@ class Ui_MainWindow(object):
 
         
     def readData(self):
-        """ This function will read the data using pandas and call the update
-                function to plot
-        """
-
         # get current filname of combobox
-        filename = str(self.comboBox.currentText())
-        self.df = get_coord('TSP/' + filename)
-        self.adj_matrix = get_adj_matrix('TSP/' + filename)
+        self.filename = str(self.comboBox.currentText())
+        self.points = get_coord('TSP/' + self.filename)
+        self.adj_matrix = get_adj_matrix('TSP/' + self.filename)
         
 
     def makePlot(self):
@@ -179,36 +181,28 @@ class Ui_MainWindow(object):
 
         self.canv = MatplotlibCanvas(self)
         self.toolbar = Navi(self.canv,self.centralwidget)
-		
         self.horizontalLayout.addWidget(self.toolbar)
-        self.verticalLayout.addWidget(self.canv)
-
         
-        classicPlot(self)
+        self.verticalLayout.addWidget(self.canv)
+        self.classicPlot()
 
-def classicPlot(self):
-    ax = self.canv.axes
-    self.points = self.df
+    def classicPlot(self):
+        ax = self.canv.axes
   
-    #self.path = [1, 8, 38,31, 44, 18,7, 28,6,37,19,27,17,43,30,36,46,33,20,47,21,32,39,48,5,42,24,10,45,35,4,26,2,29,34,41,16,22,3,23,14,25,13,11,12,15,40,9,1]
-    x = [self.points[i][0] for i in self.path]
-    y = [self.points[i][1] for i in self.path]
-    a_scale = float(max(x) + min(x))/float(130)
-    ax.scatter(x,y)
+        x = [self.points[i][0] for i in self.path]
+        y = [self.points[i][1] for i in self.path]
+        a_scale = float(max(x) + min(x))/float(130)
+        ax.scatter(x,y)
 
-    # ax.arrow(x[-1], y[-1], (x[0] - x[-1]), (y[0] - y[-1]), head_width=a_scale,
-    #     color='g', length_includes_head=True)
-    for i in range(0, len(x)-1):
-        ax.arrow(x[i], y[i], (x[i+1] - x[i]), (y[i+1] - y[i]), head_width=a_scale,
-            color='g', length_includes_head=True)
+        for i in range(0, len(x)-1):
+            ax.arrow(x[i], y[i], (x[i+1] - x[i]), (y[i+1] - y[i]), head_width=a_scale,
+                color='g', length_includes_head=True)
 
-    #ax.xlim(0, max(x)*1.1)
-    #ax.ylim(0, max(y)*1.1)
-    ax.set_xlabel(None)
-    ax.set_ylabel(None)
-    ax.set_title(self.comboBox.currentText())
+        ax.set_xlabel(None)
+        ax.set_ylabel(None)
+        ax.set_title(self.comboBox.currentText())
 
-    self.canv.draw()
+        self.canv.draw()
 
 
 if __name__ == "__main__":
